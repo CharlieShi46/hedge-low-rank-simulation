@@ -8,10 +8,6 @@ This repository contains the code and supplementary material for the research no
 Author: Cheng Shi, Michael Spece
 2021
 
-## 📄 Paper
-The full PDF is available here:  
-**[paper.pdf](./paper.pdf)**
-
 ## 🧠 Project Overview
 This project studies how the Exponential Weights/Hedge algorithm behaves under
 low-rank expert-loss matrices. Prior work required slow rejection sampling to
