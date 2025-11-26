@@ -20,4 +20,3 @@ generate rank-r matrices. I implemented a faster constructive method that:
 The experiments confirm that Hedge **implicitly adapts to low-rank structure** and
 exhibits the expected √r regret behavior.
 
-## 📂 Code Structure
