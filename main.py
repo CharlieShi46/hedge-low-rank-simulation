@@ -38,20 +38,88 @@ def EWA(N, T, Y):
 # -------------------------------------------------------------
 def algo5(N, r):
     """
-    Generate a binary (0/1) loss matrix Y of size (N, N)
-    with exact rank r.
-    Replace this stub with your actual implementation.
+    Generate a binary (0/1) loss matrix Y of shape (N, N)
+    with exact rank r under GF(2) arithmetic.
+    
+    Steps follow the idea in Algorithm 2 from the project:
+      1. Randomly generate independent rows (basis) until rank = r.
+      2. Generate dependent rows as GF(2) linear combinations.
+      3. Stack into full matrix Y.
 
-    N: number of experts (= horizon)
-    r: desired rank
+    Returns:
+        Y : (N, N) binary matrix (dtype=int) with rank r in GF(2)
     """
 
-    # -------- Replace this with your actual algorithm --------
-    # For now: use random full-rank matrix as temporary placeholder
-    # (Just so the script runs. Replace this with your Algorithm 2.)
-    Y = np.random.randint(0, 2, size=(N, N))
+    # -------- Helper: GF(2) rank over {0,1} --------
+    def gf2_rank(matrix):
+        A = matrix.copy().astype(int)
+        rows, cols = A.shape
+        rank = 0
+        col = 0
+
+        for r0 in range(rows):
+            # find pivot
+            while col < cols and A[r0:, col].max() == 0:
+                col += 1
+            if col == cols:
+                break
+
+            # pivot row index
+            pivot = r0 + A[r0:, col].argmax()
+
+            # swap pivot row to r0
+            if pivot != r0:
+                A[[r0, pivot]] = A[[pivot, r0]]
+
+            # eliminate below (GF(2): XOR)
+            for rr in range(r0 + 1, rows):
+                if A[rr, col] == 1:
+                    A[rr] ^= A[r0]   # XOR
+
+            rank += 1
+            col += 1
+
+        return rank
+
+    # -------- Step 1: generate r independent basis rows --------
+    basis = []
+    while len(basis) < r:
+        candidate = np.random.randint(0, 2, size=N)
+        if len(basis) == 0:
+            basis.append(candidate)
+            continue
+
+        # check if adding this row increases GF(2) rank
+        test = np.vstack(basis + [candidate])
+        if gf2_rank(test) > gf2_rank(np.vstack(basis)):
+            basis.append(candidate)
+
+    basis = np.vstack(basis)  # shape (r, N)
+
+    # -------- Step 2: generate dependent rows as XOR combinations --------
+    rows = [basis[i] for i in range(r)]
+
+    for i in range(N - r):
+        # random binary coefficients
+        coeff = np.random.randint(0, 2, size=r)
+        # avoid all-zero coefficient (would produce zero row)
+        while coeff.sum() == 0:
+            coeff = np.random.randint(0, 2, size=r)
+
+        # XOR combination of basis rows
+        row = np.zeros(N, dtype=int)
+        for j in range(r):
+            if coeff[j] == 1:
+                row ^= basis[j]
+
+        rows.append(row)
+
+    Y = np.vstack(rows)
+
+    # -------- Step 3: shuffle rows (optional but makes simulation unbiased) --------
+    np.random.shuffle(Y)
+
     return Y
-    # ----------------------------------------------------------
 
 
 # -------------------------------------------------------------
