@@ -1,8 +1,5 @@
 # hedge-low-rank-simulation
 Faster simulation of Hedge algorithm under low-rank expert structures. Includes code and PDF.
-# Faster Simulation of Hedge in Low-Rank Expert Settings
-
-This repository contains the code and supplementary material for the research note:
 
 **“Faster Simulation of Hedge under Low-Rank Expert Structures”**  
 Author: Cheng Shi, Michael Spece
