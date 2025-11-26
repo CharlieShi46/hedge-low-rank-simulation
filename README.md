@@ -1,4 +1,4 @@
-# hedge-low-rank-simulation
+# Hedge-Low-Rank-Simulation
 Faster simulation of Hedge algorithm under low-rank expert structures. Includes code and PDF.
 
 **“Faster Simulation of Hedge under Low-Rank Expert Structures”**  
